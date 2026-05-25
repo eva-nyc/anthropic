@@ -30,6 +30,7 @@ import json
 import re
 import sys
 import argparse
+from urllib.parse import urlparse
 from typing import Dict, List, Tuple, Any, Optional
 
 # Validation metadata
@@ -416,7 +417,8 @@ def validate_manifest(asm: Dict, result: ValidationResult):
 
     manifest = asm["$asm.manifest"]
     if isinstance(manifest, str):
-        if "allotrope.org" in manifest:
+        host = urlparse(manifest).hostname
+        if host and (host == "allotrope.org" or host.endswith(".allotrope.org")):
             result.add_info(f"Manifest: {manifest}")
         else:
             result.add_warning(f"Non-standard manifest URL: {manifest}")
